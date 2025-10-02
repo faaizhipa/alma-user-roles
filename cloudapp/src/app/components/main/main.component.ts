@@ -1,24 +1,15 @@
-import { Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, DestroyRef, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AlertService,
+  CloudAppRestService,
   CloudAppEventsService,
-  Entity,
-  EntityType,
 } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { EMPTY, Observable, Subject } from 'rxjs';
-import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
-import { ValidationInfo } from '../../models/validationInfo';
-import { UserService } from '../../services/user.service';
-import { UserAccessService } from '../../services/userAccess.service';
-import { UserRolesService } from '../../services/userRoles.service';
-import { CompareResult } from '../../types/compareResult.type';
-import { CopyResult } from '../../types/copyResult.type';
-import { UserDetailsChecked } from '../../types/userDetailsChecked';
-import { UserRole } from '../../types/userRole.type';
-import { ValidationDialog } from '../validation-dialog/validation-dialog.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { FileType, ProcessingResult } from '../../types/asset.types';
+import { AssetService } from '../../services/asset.service';
 
 @Component({
   selector: 'app-main',
@@ -27,191 +18,103 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class MainComponent implements OnInit {
   public loading: boolean = false;
-  public checkingUser: boolean = false;
-  public isUserAllowed: boolean = false;
-
-  public permissionError?: string;
-
-  public currentUserEntity: Entity | null = null;
-  public replaceExistingRoles: boolean = false;
-  public sourceUserOptions: UserDetailsChecked[] = [];
-  public sourceUser: UserDetailsChecked | null = null;
-
-  public copyResult!: CopyResult | null;
-  public compareResult!: CompareResult | null;
-  public resultsExpanded: boolean = false;
-
-  public resetEventSubject = new Subject<void>();
-
-  private selectedRoles: UserRole[] = [];
+  public fileTypes: FileType[] = [];
+  public processingResult: ProcessingResult | null = null;
+  public showResults: boolean = false;
 
   public constructor(
-    private dialog: MatDialog,
+    private restService: CloudAppRestService,
     private eventsService: CloudAppEventsService,
-    private alert: AlertService,
+    private assetService: AssetService,
+    private alertService: AlertService,
     private translate: TranslateService,
-    private userService: UserService,
-    private userRoleService: UserRolesService,
-    private userAccessService: UserAccessService,
     private destroyRef: DestroyRef
   ) {}
 
   public ngOnInit(): void {
-    this.eventsService.entities$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((entities) => this.selectUserFromCurrentPage(entities))
-      )
-      .subscribe();
-    this.checkingUser = true;
     this.loading = true;
-    this.userAccessService
-      .isUserAllowed()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((allowed) => {
-          this.isUserAllowed = allowed;
-          this.checkingUser = false;
-        }),
-        catchError((error) => {
-          let alertMsg = this.translate.instant('main.error.permissionCheck', {
-            status: error.status,
-          });
-          this.alert.error(alertMsg, { autoClose: true });
-          console.error(
-            'Error while checking permissions in ngOnInit()',
-            error
-          );
-          this.permissionError = `Permission denied: ${error.message}`;
-          return EMPTY;
-        }),
-        finalize(() => (this.loading = false))
-      )
-      .subscribe();
+    this.loadFileTypes();
   }
 
-  public selectUserFromCurrentPage(entities: Entity[]): void {
-    if (entities.length == 1) {
-      let singleEntity = entities[0];
-      if (singleEntity.type === EntityType.USER) {
-        this.currentUserEntity = singleEntity;
-        return;
-      }
-    }
-    this.currentUserEntity = null;
-  }
-
-  public selectSourceUser(user: UserDetailsChecked): void {
-    this.loading = true;
-    this.userRoleService
-      .validate(user)
+  /**
+   * Load file types from Ex Libris Configuration API
+   * Cloud apps authenticate automatically - no API key required
+   */
+  private loadFileTypes(): void {
+    this.assetService
+      .getFileTypes()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap((validationInfo: ValidationInfo) => {
-          user.rolesChecked = true;
-          if (validationInfo.valid) {
-            this.sourceUser = user;
-            user.rolesValid = true;
-          } else {
-            this.sourceUser = null;
-            user.rolesValid = false;
-            let dialogRef = this.dialog.open(ValidationDialog, {
-              autoFocus: false,
-              data: validationInfo,
-            });
-            dialogRef.afterClosed().subscribe((data) => {
-              if (data) {
-                this.sourceUser = user;
-              }
-            });
+        tap((response) => {
+          if (response && response.row) {
+            this.fileTypes = response.row
+              .map((row: any) => ({
+                code: row.column0?.value || row.code || '',
+                description:
+                  row.column1?.value || row.description || row.column0?.value || '',
+              }))
+              .filter((type: FileType) => type.code);
           }
+
+          // Fallback if API returns no data
+          if (this.fileTypes.length === 0) {
+            this.fileTypes = this.getDefaultFileTypes();
+          }
+
+          this.loading = false;
         }),
         catchError((error) => {
-          let alertMsg = this.translate.instant('main.error.validationAlert', {
-            status: error.status,
-          });
-          this.alert.error(alertMsg, { autoClose: true });
-          console.error('Error while validating in selectSourceUser()', error);
-          return EMPTY;
-        }),
-        finalize(() => {
+          console.warn('Could not load file types from API, using defaults:', error);
+          this.alertService.warn(
+            this.translate.instant('main.warnings.fileTypesAPIFailed'),
+            { autoClose: true }
+          );
+          this.fileTypes = this.getDefaultFileTypes();
           this.loading = false;
+          return EMPTY;
         })
       )
       .subscribe();
   }
 
-  public copyUserRoles(): void {
-    this.loading = true;
-    this.resetResults();
-    this.userService
-      .getUserDetailsFromEntity(this.currentUserEntity!)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((userDetails) =>
-          this.userRoleService.copy(
-            this.sourceUser!,
-            this.selectedRoles,
-            userDetails,
-            this.replaceExistingRoles
-          )
-        ),
-        tap((copyResult: CopyResult) => {
-          this.copyResult = copyResult;
-          this.eventsService.refreshPage().subscribe(() =>
-            this.alert.success(this.translate.instant('main.successAlert'), {
-              autoClose: true,
-              delay: 5000,
-            })
-          );
-        }),
-        catchError((error) => {
-          let alertMsg = this.translate.instant(
-            'main.error.copyUserRolesAlert',
-            {
-              status: error.status,
-            }
-          );
-          this.alert.error(alertMsg, { autoClose: true });
-          console.error('Error in copyUserRoles()', error);
-          return EMPTY;
-        }),
-        finalize(() => (this.loading = false))
-      )
-      .subscribe();
+  /**
+   * Get default file types as fallback
+   */
+  private getDefaultFileTypes(): FileType[] {
+    return [
+      { code: 'PDF', description: 'Portable Document Format' },
+      { code: 'DOC', description: 'Microsoft Word Document' },
+      { code: 'DOCX', description: 'Microsoft Word Document (OpenXML)' },
+      { code: 'XLS', description: 'Microsoft Excel Spreadsheet' },
+      { code: 'XLSX', description: 'Microsoft Excel Spreadsheet (OpenXML)' },
+      { code: 'PPT', description: 'Microsoft PowerPoint Presentation' },
+      { code: 'PPTX', description: 'Microsoft PowerPoint Presentation (OpenXML)' },
+      { code: 'TXT', description: 'Plain Text File' },
+      { code: 'RTF', description: 'Rich Text Format' },
+      { code: 'HTML', description: 'HyperText Markup Language' },
+      { code: 'XML', description: 'Extensible Markup Language' },
+      { code: 'JPG', description: 'JPEG Image' },
+      { code: 'PNG', description: 'Portable Network Graphics' },
+      { code: 'GIF', description: 'Graphics Interchange Format' },
+      { code: 'MP4', description: 'MPEG-4 Video' },
+      { code: 'MP3', description: 'MPEG Audio Layer 3' },
+      { code: 'ZIP', description: 'ZIP Archive' },
+    ];
   }
 
-  public compareUserRoles(): void {
-    this.loading = true;
-    this.resetResults();
-    this.userService
-      .getUserDetailsFromEntity(this.currentUserEntity!)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((userDetails) => {
-          return this.userRoleService.compare(this.sourceUser!, userDetails);
-        }),
-        tap((compareResult: CompareResult) => {
-          this.compareResult = compareResult;
-          this.loading = false;
-        })
-      )
-      .subscribe();
+  /**
+   * Handle processing completion
+   */
+  public onProcessingComplete(result: ProcessingResult): void {
+    this.processingResult = result;
+    this.showResults = true;
   }
 
-  public selectSourceRoles(userRoles: UserRole[]): void {
-    this.selectedRoles = userRoles;
-  }
-
-  public resetResults(): void {
-    this.copyResult = null;
-    this.compareResult = null;
-    this.resultsExpanded = false;
-  }
-
-  public reset(): void {
-    this.sourceUser = null;
-    this.resetEventSubject.next();
-    this.resetResults();
+  /**
+   * Start over
+   */
+  public startOver(): void {
+    this.processingResult = null;
+    this.showResults = false;
   }
 }

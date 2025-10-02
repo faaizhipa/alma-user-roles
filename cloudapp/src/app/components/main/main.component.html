@@ -1,115 +1,34 @@
-<div id="copy-user-roles-main">
-  <!-- action buttons -->
-  <div class="eca-actions">
-    <button
-      mat-flat-button
-      color="secondary"
-      (click)="reset()"
-      [disabled]="!sourceUser || loading"
-    >
-      {{ 'main.resetButton' | translate }}
-    </button>
-    <button
-      mat-flat-button
-      color="secondary"
-      (click)="compareUserRoles()"
-      [disabled]="!currentUserEntity || !sourceUser || loading"
-    >
-      {{ 'main.compareButton' | translate }}
-    </button>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="copyUserRoles()"
-      [disabled]="!currentUserEntity || !sourceUser || loading"
-    >
-      {{ 'main.copyUserRolesButton' | translate }}
-    </button>
-  </div>
-  <!-- /action buttons -->
-  <!-- checking permissions -->
-  <div *ngIf="checkingUser">
-    <section>
-      <h1 *ngIf="!permissionError" translate>main.checkingPermissions</h1>
-      <div>
-        <div *ngIf="permissionError">
-          <h1 translate>main.userIsNotAllowed</h1>
-          <p translate>main.needsAtLeastUserManager</p>
-          <pre class="technical-error">{{ permissionError }}</pre>
-        </div>
-      </div>
-    </section>
-  </div>
-  <div *ngIf="!isUserAllowed && !checkingUser">
-    <section>
-      <h1 translate>main.userIsNotAllowed</h1>
-      <div>
-        <p translate>main.userIsNotAllowedInfo</p>
-      </div>
-    </section>
-  </div>
-  <!-- /checking permissions -->
-  <div *ngIf="isUserAllowed && !checkingUser">
-    <!-- target user -->
-    <section>
-      <h1 translate>main.targetUserTitle</h1>
-      <div *ngIf="!currentUserEntity">
-        <p translate>main.selectTargetUserInfo</p>
-      </div>
-      <div *ngIf="currentUserEntity">
-        <p translate>main.rolesCopyToTargetInfo</p>
-        <p class="username">
-          <span class="uxf-icon uxf-user leading-icon"></span>
-          {{ currentUserEntity.description }}
-        </p>
-        <mat-checkbox [(ngModel)]="replaceExistingRoles">{{
-          'main.replaceExistingRolesCheckboxLabel' | translate
-        }}</mat-checkbox>
-        <app-result
-          [copyResult]="copyResult"
-          [compareResult]="compareResult"
-        ></app-result>
-      </div>
-    </section>
-    <!-- /target user -->
-
-    <!-- source user -->
-    <section>
-      <h1 translate>main.sourceUserTitle</h1>
-      <div [style.display]="currentUserEntity ? 'none' : 'block'">
-        <p translate>main.selectTargetFirstInfo</p>
-      </div>
-      <div [style.display]="!currentUserEntity ? 'none' : 'block'">
-        <p
-          class="username"
-          *ngIf="sourceUser"
-          [ngPlural]="sourceUser.user_role.length"
-        >
-          <span class="uxf-icon uxf-user leading-icon"></span>
-          {{ sourceUser.last_name }}, {{ sourceUser.first_name }} -
-          {{ sourceUser.user_role.length }}
-          <ng-template ngPluralCase="=1">{{
-            'global.role' | translate
-          }}</ng-template>
-          <ng-template ngPluralCase="other">{{
-            'global.roles' | translate
-          }}</ng-template>
-        </p>
-        <p class="bold" *ngIf="!sourceUser" translate>main.searchUserInfo</p>
-        <app-role-select
-          [user]="sourceUser"
-          (rolesSelectedOutput)="selectSourceRoles($event)"
-        >
-        </app-role-select>
-        <app-find-user
-          [resetEventObservable$]="resetEventSubject.asObservable()"
-          (selectedUserOutput)="selectSourceUser($event)"
-        >
-        </app-find-user>
-      </div>
-    </section>
-    <!-- /source user -->
-  </div>
-
+<div id="esploro-asset-file-processor-main">
   <app-loader [loading]="loading"></app-loader>
+
+  <div *ngIf="!loading && !showResults">
+    <!-- Welcome Section -->
+    <section>
+      <h1 translate>main.title</h1>
+      <p translate>main.subtitle</p>
+      <p translate>main.description</p>
+    </section>
+
+    <!-- CSV Processor Component -->
+    <section>
+      <app-csv-processor
+        [fileTypes]="fileTypes"
+        (processingComplete)="onProcessingComplete($event)"
+      ></app-csv-processor>
+    </section>
+  </div>
+
+  <!-- Processing Results -->
+  <div *ngIf="showResults && processingResult">
+    <section>
+      <div class="eca-actions">
+        <button mat-flat-button color="primary" (click)="startOver()">
+          <mat-icon>refresh</mat-icon>
+          {{ 'main.startOver' | translate }}
+        </button>
+      </div>
+
+      <app-processing-results [result]="processingResult"></app-processing-results>
+    </section>
+  </div>
 </div>
