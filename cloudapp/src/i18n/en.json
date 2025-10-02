@@ -1,90 +1,133 @@
 {
-  "config": {
-    "allowAnyRole": "No restriction by role",
-    "allowByRole": "Allow by role",
-    "allowByUser": "Allow by user",
-    "allowedUsers": "Allowed users:",
-    "allowForGeneralAdministrator": "General Administrator",
-    "allowForUserAdministrator": "User Administrator",
-    "allowUsage": "Manage app usage",
-    "allowUsageExplanation": "The following settings can be used to manage the use of the app. If no configuration is made, all users are allowed. An explicit entry in the list of allowed users always has access, regardless of the roles.",
-    "allowUsersWithRoleText": "Allow usage for users with the following roles:",
-    "confirmRemoveConfig": "Do you really want to remove the configuration?",
-    "confirmUnsaved": "Unsaved data, proceed anyway?",
-    "enableCheckScope": "Check role scope",
-    "enableCheckScopeExplanation": "If enabled, library specific role management will be enabled. Users with the User Manager role, scoped to a specific library, will only be able to copy roles with the same library scope. This does not apply to users with the User Administrator role, who can copy any role.",
-    "enableCheckScopeLabel": "Enable library specific role management",
-    "removeConfig": "Remove configuration",
-    "rolesAndUsersAreExclusive": "If there are users in the allow list, roles will not be checked",
-    "saveButton": "Save",
-    "searchForUser": "Search user:",
-    "userAlreadyInList": "'{{user}}' is already on the list"
-  },
-  "findUser": {
-    "error": {
-      "findUserAlert": "Could not search for user, Alma responded with status: '{{status}}'",
-      "userDetailAlert": "Could not get user details for user {{primaryId}}, Alma responded with status: '{{status}}'"
-    },
-    "findUserLabel": "Find user",
-    "resultCountInfo": "(only {{pageSize}} displayed, please refine search, e.g. full name or primary ID)",
-    "resultCountLabel": "Results: {{resultCount}}",
-    "rolesNotValid": "Not all roles valid",
-    "rolesValid": "All roles valid",
-    "selectUserFromListInfo": "Select a user from the list:"
-  },
-  "global": {
-    "role": "role",
-    "roles": "roles"
-  },
   "main": {
-    "checkingPermissions": "Checking permissions...",
-    "compareButton": "Compare",
-    "copyUserRolesButton": "Copy",
-    "error": {
-      "copyUserRolesAlert": "Could not copy user roles, Alma responded with status: '{{status}}'",
-      "permissionCheck": "Could not check permissions, Alma responded with status: '{{status}}'",
-      "validationAlert": "Could not validate user, Alma responded with status: '{{status}}'"
-    },
-    "needsAtLeastUserManager": "To use this app, you need at least the 'User Manager' role.",
-    "replaceExistingRolesCheckboxLabel": "Replace existing roles",
-    "resetButton": "Reset",
-    "results": {
-      "copiedRolesTitle": "Effectively copied roles: {{count}}",
-      "copyInfo": "If this numbers seem incorrect, use the 'compare function' to check if the source user has duplicate roles. Duplicate roles are reduced during copying.",
-      "intersection": "Intersection ({{count}})",
-      "invalidRolesTitle": "Invalid roles, skipped: {{count}}",
-      "noneYet": "perform action to see results",
-      "onlyInSource": "Only on source ({{count}})",
-      "onlyInTarget": "Only on target ({{count}})",
-      "ready": "results ready",
-      "rolesSelectedToCopyTitle": "Selected to copy: {{count}}",
-      "skippedDuplicateRolesTitle": "Duplicate roles, skipped: {{count}}",
-      "sourceDuplicates": "Duplicates on source ({{count}})",
-      "targetDuplicates": "Duplicates on target ({{count}})",
-      "title": "Results",
-      "validRolesTitle": "Valid roles on target: {{count}}"
-    },
-    "rolesCopyToTargetInfo": "Roles will be copied to this user",
-    "searchUserInfo": "Search for a user",
-    "selectTargetFirstInfo": "Select a target user first.",
-    "selectTargetUserInfo": "Select the target user by navigating to a user record in Alma.",
-    "sourceUserTitle": "Copy roles from this user",
-    "successAlert": "Successfully copied user roles. For further information, see 'Results'.",
-    "targetUserTitle": "Copy roles to this user",
-    "userIsNotAllowed": "Permission denied",
-    "userIsNotAllowedInfo": "You don't have the permission to use this app."
+    "title": "Esploro Asset File Processor",
+    "subtitle": "Batch upload files to Esploro research assets via CSV",
+    "description": "Upload a CSV file with asset MMS IDs and file URLs, map columns to fields, and process files in bulk.",
+    "startOver": "Start Over",
+    "warnings": {
+      "fileTypesAPIFailed": "Could not load file types from system, using defaults"
+    }
   },
-  "roleSelect": {
-    "deselectAll": "Deselect all",
-    "notInScope": "Role not in scope",
-    "rolesSelected": "Selected roles",
-    "selectAll": "Select all"
+  "csvProcessor": {
+    "upload": {
+      "title": "Upload CSV File",
+      "subtitle": "Select or drag and drop your CSV file",
+      "dropzone": "Drag and drop your CSV file here",
+      "or": "or",
+      "selectFile": "Select File"
+    },
+    "requirements": {
+      "title": "File Requirements:",
+      "format": "CSV format with comma separation",
+      "headers": "First row must contain column headers",
+      "encoding": "UTF-8 encoding recommended"
+    },
+    "mapping": {
+      "title": "Map CSV Columns",
+      "subtitle": "Associate your CSV columns with the required fields",
+      "csvHeader": "CSV Column Header",
+      "sampleValue": "Sample Value",
+      "mapToField": "Map to Field",
+      "selectField": "Select field type",
+      "ignoreColumn": "Ignore Column",
+      "highConfidence": "High confidence mapping"
+    },
+    "preview": {
+      "title": "Data Preview",
+      "records": "Found {{count}} records"
+    },
+    "actions": {
+      "back": "Back",
+      "next": "Next",
+      "processData": "Process Data",
+      "uploadDifferent": "Upload Different File"
+    },
+    "processing": {
+      "status": "Processing {{current}} of {{total}} assets",
+      "current": "Currently processing"
+    },
+    "errors": {
+      "invalidFileType": "Please select a CSV file",
+      "fileTooLarge": "File size must be less than 10MB",
+      "emptyFile": "The uploaded file is empty",
+      "fileProcessing": "Error processing file",
+      "batchProcessing": "Error processing batch"
+    },
+    "success": {
+      "fileUploaded": "Successfully loaded {{records}} records from CSV",
+      "batchProcessed": "Successfully processed {{count}} assets"
+    },
+    "validation": {
+      "mmsIdRequired": "At least one column must be mapped to MMS ID",
+      "duplicateMappings": "Duplicate mappings found for: {{fields}}"
+    }
   },
-  "validationDialog": {
-    "abortButtonLabel": "Cancel",
-    "introText": "Validation of roles failed: Not all roles of this user are valid.",
-    "outroText": "If you press 'Select user', the roles will be copied in small groups, in order to find and skip the invalid ones. This could take a while.",
-    "proceedAnywayButtonLabel": "Select user",
-    "title": "Warning, not all roles are valid"
+  "processingResults": {
+    "title": "Processing Results",
+    "successful": "Successful",
+    "failed": "Failed",
+    "urlCopied": "URL copied to clipboard",
+    "andMore": "And {{count}} more...",
+    "detailed": {
+      "title": "Detailed Results"
+    },
+    "table": {
+      "status": "Status",
+      "mmsId": "MMS ID",
+      "fileTitle": "File Title",
+      "error": "Error Message"
+    },
+    "instructions": {
+      "title": "Next Steps",
+      "subtitle": "Complete the workflow in Esploro",
+      "step1": {
+        "title": "Download MMS ID File",
+        "description": "Download the generated CSV file containing successful asset MMS IDs:",
+        "downloadButton": "Download MMS ID CSV",
+        "fileInfo": "File contains {{count}} asset identifiers"
+      },
+      "step2": {
+        "title": "Create Asset Set in Esploro",
+        "description": "Use the downloaded file to create a set of assets:",
+        "item1": "Navigate to Search & Browse > Advanced Search",
+        "item2": "Click \"Upload file with identifiers\"",
+        "item3": "Upload the downloaded CSV file",
+        "item4": "Select \"MMS ID\" as the identifier type",
+        "item5": "Click \"Create Set\" and provide a meaningful name"
+      },
+      "step3": {
+        "title": "Run Import Asset Files Job",
+        "description": "Execute the file import job:",
+        "item1": "Go to Repository > Monitor Jobs > Run a Job",
+        "item2": "Find and select \"Import Research Assets Files\"",
+        "item3": "Choose the set created in the previous step",
+        "item4": "Configure job parameters as needed",
+        "item5": "Submit the job and monitor progress"
+      },
+      "step4": {
+        "title": "Access Processed Files",
+        "description": "Once the job completes, access your files using these URLs:",
+        "viewerUrls": "Esploro Viewer URLs:",
+        "viewFiles": "View Files",
+        "copyUrl": "Copy URL to clipboard"
+      }
+    }
+  },
+  "fields": {
+    "mmsId": {
+      "description": "Esploro asset identifier (required)"
+    },
+    "remoteUrl": {
+      "description": "Direct URL to file content"
+    },
+    "fileTitle": {
+      "description": "Display name for the file"
+    },
+    "fileDescription": {
+      "description": "Detailed file description"
+    },
+    "fileType": {
+      "description": "File format or MIME type"
+    }
   }
 }

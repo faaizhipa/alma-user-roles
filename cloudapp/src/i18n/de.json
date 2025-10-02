@@ -1,90 +1,133 @@
 {
-  "config": {
-    "allowAnyRole": "Keine Einschränkungen aufgrund von Rollen",
-    "allowByRole": "Erlaubte Rollen verwalten",
-    "allowByUser": "Erlaubte Benutzende verwalten",
-    "allowedUsers": "Erlaubte Benutzende:",
-    "allowForGeneralAdministrator": "General Adminstrator (Allgemeiner Systemadminstrator)",
-    "allowForUserAdministrator": "User Adminstrator (Benutzer-Administrator)",
-    "allowUsage": "Benutzung der App verwalten",
-    "allowUsageExplanation": "Mit den folgenden Einstellungen lässt sich die Benutzung der App verwalten. Wenn keine Konfiguration vorgenommen wird, sind alle Benutzenden erlaubt. Ein expliziter Eintrag in der List der erlaubten Benutzenden hat immer Zugriff, unabhängig von den Rollen.",
-    "allowUsersWithRoleText": "Benutzenden mit folgenden Rollen verwendung erlauben:",
-    "confirmRemoveConfig": "Wollen sie die vorgenommene Konfiguration wirklich entfernen?",
-    "confirmUnsaved": "Ungespeicherte Daten, trotzdem Seite verlassen?",
-    "enableCheckScope": "Rollen-Bereich prüfen",
-    "enableCheckScopeExplanation": "Wenn diese Einstellung aktiviert ist, wird die bibliotheksspezifische Rollenverwaltung aktiviert. Benutzer mit der Rolle „Benutzer-Manager“, die auf eine bestimmte Bibliothek beschränkt sind, können nur Rollen mit demselben Bibliotheksbereich übertragen. Dies gilt nicht für Benutzer mit der Rolle „Benutzer-Administrator“, die alle Rollen auf übertragen können.",
-    "enableCheckScopeLabel": "Bibliotheksspezifische Rollenverwaltung aktivieren",
-    "removeConfig": "Konfiguration entfernen",
-    "rolesAndUsersAreExclusive": "Wenn die Benutzendenliste gepflegt ist, werden keine Rollen geprüft",
-    "saveButton": "Speichern",
-    "searchForUser": "Benutzende suchen:",
-    "userAlreadyInList": "'{{user}}' hat bereits Zugriff"
-  },
-  "findUser": {
-    "error": {
-      "findUserAlert": "Benutzer suchen fehlgeschlagen, Alma antwortet mit Status: '{{status}}'",
-      "userDetailAlert": "Benutzerdetails für Benutzer '{{primaryId}}' fehlgeschlagen, Alma antwortet mit Status: '{{status}}'"
-    },
-    "findUserLabel": "Suchen",
-    "resultCountInfo": "(nur {{pageSize}} Einträge sichtbar, bitte Suche verfeinern z.B voller Name od. Primary ID)",
-    "resultCountLabel": "Resultate: {{resultCount}}",
-    "rolesNotValid": "Nicht alle Rollen gültig",
-    "rolesValid": "Alle Rollen gültig",
-    "selectUserFromListInfo": "Benutzer aus Liste wählen:"
-  },
-  "global": {
-    "role": "Rolle",
-    "roles": "Rollen"
-  },
   "main": {
-    "checkingPermissions": "Überprüfe Zugriffsrechte...",
-    "compareButton": "Vergleichen",
-    "copyUserRolesButton": "Kopieren",
-    "error": {
-      "copyUserRolesAlert": "Rollen kopieren fehlgeschlagen, Alma antwortet mit Status: '{{status}}'",
-      "permissionCheck": "Prüfen der Zugrifssrechte fehlgeschlagen, Alma antwortet mit Status '{{status}}'",
-      "validationAlert": "Validieren des Benutzers fehlgeschlagen, Alma antwortet mit Status: '{{status}}'"
-    },
-    "needsAtLeastUserManager": "Zur Verwendung dieser App wird mindestens die Rolle 'Benutzer Manager' benötigt.",
-    "replaceExistingRolesCheckboxLabel": "Bestehende Rollen ersetzen",
-    "resetButton": "Zurücksetzen",
-    "results": {
-      "copiedRolesTitle": "Tatsächlich kopierte Rollen: {{count}}",
-      "copyInfo": "Falls diese Zahlen nicht korrekt aussehen, nutzen sie die 'Vergleichen Funktion', um zu sehen, ob die Quelle Duplikate hat. Doppelte Rollen werden beim Kopieren reduziert.",
-      "intersection": "Überschneidung ({{count}})",
-      "invalidRolesTitle": "Ungültige Rollen, ausgelassen: {{count}}",
-      "noneYet": "Noch keine Ergebnisse",
-      "onlyInSource": "Nur Quelle ({{count}})",
-      "onlyInTarget": "Nur Ziel ({{count}})",
-      "ready": "Resultate bereit",
-      "rolesSelectedToCopyTitle": "Gewählt für Kopie: {{count}}",
-      "skippedDuplicateRolesTitle": "Duplikate, ausgelassen: {{count}}",
-      "sourceDuplicates": "Duplikate auf Quelle ({{count}})",
-      "targetDuplicates": "Duplikate auf Ziel({{count}})",
-      "title": "Ergebnisse",
-      "validRolesTitle": "Gültige Rollen, auf Ziel: {{count}}"
-    },
-    "rolesCopyToTargetInfo": "Rollen werden auf diesen Benutzer kopiert",
-    "searchUserInfo": "Benutzer Suchen",
-    "selectTargetFirstInfo": "Bitte zuerst einen Ziel-Benutzer wählen",
-    "selectTargetUserInfo": "Ziel-Benutzer wählen indem Benutzerdetails eines Benutzers in Alma geöffnet werden ",
-    "sourceUserTitle": "Rollen von diesem Benutzer kopieren",
-    "successAlert": "Rollen erfolgreich kopiert. Für weitere Infomationen, siehe 'Resultate'",
-    "targetUserTitle": "Rollen auf diesen Benutzer kopieren",
-    "userIsNotAllowed": "Zugriff verweigert",
-    "userIsNotAllowedInfo": "Sie haben nicht die nötigen Zugriffsrechte um die App zu verwenden."
+    "title": "Esploro Asset-Datei-Prozessor",
+    "subtitle": "Stapelverarbeitung von Dateien für Esploro Forschungsressourcen per CSV",
+    "description": "Laden Sie eine CSV-Datei mit Asset-MMS-IDs und Datei-URLs hoch, ordnen Sie Spalten Feldern zu und verarbeiten Sie Dateien im Stapel.",
+    "startOver": "Neu Beginnen",
+    "warnings": {
+      "fileTypesAPIFailed": "Dateitypen konnten nicht vom System geladen werden, verwende Standardwerte"
+    }
   },
-  "roleSelect": {
-    "deselectAll": "Alle abwählen",
-    "notInScope": "Rolle nicht im Scope",
-    "rolesSelected": "Gewählte Rollen",
-    "selectAll": "Alle auswählen"
+  "csvProcessor": {
+    "upload": {
+      "title": "CSV-Datei hochladen",
+      "subtitle": "Wählen Sie Ihre CSV-Datei aus oder ziehen Sie sie hierher",
+      "dropzone": "Ziehen Sie Ihre CSV-Datei hierher",
+      "or": "oder",
+      "selectFile": "Datei auswählen"
+    },
+    "requirements": {
+      "title": "Dateianforderungen:",
+      "format": "CSV-Format mit Komma-Trennung",
+      "headers": "Die erste Zeile muss Spaltenüberschriften enthalten",
+      "encoding": "UTF-8-Codierung empfohlen"
+    },
+    "mapping": {
+      "title": "CSV-Spalten zuordnen",
+      "subtitle": "Ordnen Sie Ihre CSV-Spalten den erforderlichen Feldern zu",
+      "csvHeader": "CSV-Spaltenüberschrift",
+      "sampleValue": "Beispielwert",
+      "mapToField": "Zuordnen zu Feld",
+      "selectField": "Feldtyp auswählen",
+      "ignoreColumn": "Spalte ignorieren",
+      "highConfidence": "Zuordnung mit hoher Konfidenz"
+    },
+    "preview": {
+      "title": "Datenvorschau",
+      "records": "{{count}} Datensätze gefunden"
+    },
+    "actions": {
+      "back": "Zurück",
+      "next": "Weiter",
+      "processData": "Daten verarbeiten",
+      "uploadDifferent": "Andere Datei hochladen"
+    },
+    "processing": {
+      "status": "Verarbeite {{current}} von {{total}} Assets",
+      "current": "Aktuell wird verarbeitet"
+    },
+    "errors": {
+      "invalidFileType": "Bitte wählen Sie eine CSV-Datei",
+      "fileTooLarge": "Die Dateigröße muss unter 10 MB liegen",
+      "emptyFile": "Die hochgeladene Datei ist leer",
+      "fileProcessing": "Fehler bei der Dateiverarbeitung",
+      "batchProcessing": "Fehler bei der Stapelverarbeitung"
+    },
+    "success": {
+      "fileUploaded": "{{records}} Datensätze erfolgreich aus CSV geladen",
+      "batchProcessed": "{{count}} Assets erfolgreich verarbeitet"
+    },
+    "validation": {
+      "mmsIdRequired": "Mindestens eine Spalte muss der MMS-ID zugeordnet werden",
+      "duplicateMappings": "Doppelte Zuordnungen gefunden für: {{fields}}"
+    }
   },
-  "validationDialog": {
-    "abortButtonLabel": "Abbrechen",
-    "introText": "Die Gültigkeitsprüfung der Rollen ist fehlgeschlagen: Nicht alle Rollen dieses Benutzers sind gültig.",
-    "outroText": "Wenn sie 'Benutzer wählen' klicken, können die Rollen in Gruppen kopiert werden um so die ungültigen Rollen zu finden und auszulassen. Dieser Vorgang kann etwas länger dauern.",
-    "proceedAnywayButtonLabel": "Benutzer wählen",
-    "title": "Achtung, nicht alle Rollen sind gültig"
+  "processingResults": {
+    "title": "Verarbeitungsergebnisse",
+    "successful": "Erfolgreich",
+    "failed": "Fehlgeschlagen",
+    "urlCopied": "URL in Zwischenablage kopiert",
+    "andMore": "Und {{count}} weitere...",
+    "detailed": {
+      "title": "Detaillierte Ergebnisse"
+    },
+    "table": {
+      "status": "Status",
+      "mmsId": "MMS-ID",
+      "fileTitle": "Dateititel",
+      "error": "Fehlermeldung"
+    },
+    "instructions": {
+      "title": "Nächste Schritte",
+      "subtitle": "Vervollständigen Sie den Workflow in Esploro",
+      "step1": {
+        "title": "MMS-ID-Datei herunterladen",
+        "description": "Laden Sie die generierte CSV-Datei mit erfolgreichen Asset-MMS-IDs herunter:",
+        "downloadButton": "MMS-ID-CSV herunterladen",
+        "fileInfo": "Die Datei enthält {{count}} Asset-Identifikatoren"
+      },
+      "step2": {
+        "title": "Asset-Set in Esploro erstellen",
+        "description": "Verwenden Sie die heruntergeladene Datei, um ein Asset-Set zu erstellen:",
+        "item1": "Navigieren Sie zu Suchen & Durchsuchen > Erweiterte Suche",
+        "item2": "Klicken Sie auf \"Datei mit Identifikatoren hochladen\"",
+        "item3": "Laden Sie die heruntergeladene CSV-Datei hoch",
+        "item4": "Wählen Sie \"MMS-ID\" als Identifikatortyp",
+        "item5": "Klicken Sie auf \"Set erstellen\" und geben Sie einen aussagekräftigen Namen ein"
+      },
+      "step3": {
+        "title": "Import Asset Files Job ausführen",
+        "description": "Führen Sie den Dateiimport-Job aus:",
+        "item1": "Gehen Sie zu Repository > Jobs überwachen > Job ausführen",
+        "item2": "Suchen und wählen Sie \"Import Research Assets Files\"",
+        "item3": "Wählen Sie das im vorherigen Schritt erstellte Set",
+        "item4": "Konfigurieren Sie die Job-Parameter nach Bedarf",
+        "item5": "Senden Sie den Job ab und überwachen Sie den Fortschritt"
+      },
+      "step4": {
+        "title": "Auf verarbeitete Dateien zugreifen",
+        "description": "Nach Abschluss des Jobs greifen Sie über diese URLs auf Ihre Dateien zu:",
+        "viewerUrls": "Esploro Viewer URLs:",
+        "viewFiles": "Dateien anzeigen",
+        "copyUrl": "URL in Zwischenablage kopieren"
+      }
+    }
+  },
+  "fields": {
+    "mmsId": {
+      "description": "Esploro Asset-Identifikator (erforderlich)"
+    },
+    "remoteUrl": {
+      "description": "Direkte URL zum Dateiinhalt"
+    },
+    "fileTitle": {
+      "description": "Anzeigename für die Datei"
+    },
+    "fileDescription": {
+      "description": "Detaillierte Dateibeschreibung"
+    },
+    "fileType": {
+      "description": "Dateiformat oder MIME-Typ"
+    }
   }
 }
