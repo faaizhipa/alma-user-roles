@@ -16,25 +16,19 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConfigurationComponent } from './components/configuration/configuration.component';
-import { FindUserComponent } from './components/find-user/find-user.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { MainComponent } from './components/main/main.component';
-import { RoleSelectComponent } from './components/role-select/role-select.component';
-import { ValidationDialog } from './components/validation-dialog/validation-dialog.component';
-import { ResultComponent } from './components/result/result.component';
-import { RoleOutputComponent } from './components/result/role-output.component';
+import { CSVProcessorComponent } from './components/csv-processor/csv-processor.component';
+import { ProcessingResultsComponent } from './components/processing-results/processing-results.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
     ConfigurationComponent,
-    ValidationDialog,
-    FindUserComponent,
     LoaderComponent,
-    RoleSelectComponent,
-    ResultComponent,
-    RoleOutputComponent,
+    CSVProcessorComponent,
+    ProcessingResultsComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

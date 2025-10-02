@@ -1,90 +1,133 @@
 {
+  "Main": {
+    "Title": "Esploro Asset-Datei-Prozessor",
+    "Description": "Massenhaftes Anhängen von Dateien an Forschungsassets über CSV-Upload mit intelligenter Spaltenzuordnung"
+  },
+  "CSV": {
+    "Upload": {
+      "Title": "CSV-Datei hochladen",
+      "Subtitle": "Massenverarbeitung von Asset-Dateien aus CSV-Daten",
+      "DragDrop": "Ziehen Sie Ihre CSV-Datei hierher",
+      "OrClick": "oder klicken Sie, um eine Datei auszuwählen",
+      "SelectFile": "CSV-Datei auswählen"
+    },
+    "Requirements": {
+      "Title": "Dateianforderungen:",
+      "Format": "CSV-Format mit Kommatrennung",
+      "Headers": "Erste Zeile muss Spaltenüberschriften enthalten",
+      "Encoding": "UTF-8-Kodierung empfohlen"
+    },
+    "Mapping": {
+      "Title": "CSV-Spalten zuordnen",
+      "Subtitle": "Ordnen Sie Ihre CSV-Spalten den erforderlichen Feldern zu",
+      "CSVHeader": "CSV-Spaltenüberschrift",
+      "SampleValue": "Beispielwert",
+      "MapToField": "Dem Feld zuordnen",
+      "SelectField": "Feldtyp auswählen",
+      "IgnoreColumn": "Spalte ignorieren",
+      "HighConfidence": "Zuordnung mit hoher Konfidenz"
+    },
+    "Preview": {
+      "Title": "Datenvorschau",
+      "Records": "{{count}} Datensätze gefunden"
+    },
+    "Actions": {
+      "ProcessData": "Daten verarbeiten",
+      "UploadDifferent": "Andere Datei hochladen"
+    },
+    "Processing": {
+      "Status": "Verarbeite {{current}} von {{total}} Assets",
+      "Current": "Aktuell in Verarbeitung"
+    }
+  },
+  "Fields": {
+    "MmsId": {
+      "Description": "Esploro-Asset-Kennung (erforderlich)"
+    },
+    "RemoteUrl": {
+      "Description": "Direkte URL zum Dateiinhalt"
+    },
+    "FileTitle": {
+      "Description": "Anzeigename für die Datei"
+    },
+    "FileDescription": {
+      "Description": "Detaillierte Dateibeschreibung"
+    },
+    "FileType": {
+      "Description": "Dateiformat oder MIME-Typ"
+    }
+  },
+  "Validation": {
+    "MmsIdRequired": "Mindestens eine Spalte muss der MMS-ID zugeordnet werden",
+    "DuplicateMappings": "Doppelte Zuordnungen gefunden für: {{fields}}"
+  },
+  "Results": {
+    "Title": "Verarbeitungsergebnisse",
+    "Successful": "Erfolgreich",
+    "Failed": "Fehlgeschlagen",
+    "Detailed": {
+      "Title": "Detaillierte Ergebnisse"
+    },
+    "Table": {
+      "Status": "Status",
+      "MmsId": "MMS-ID",
+      "FileTitle": "Dateititel",
+      "Error": "Fehlermeldung"
+    }
+  },
+  "Instructions": {
+    "Title": "Nächste Schritte",
+    "Subtitle": "Schließen Sie den Workflow in Esploro ab",
+    "Step1": {
+      "Title": "MMS-ID-Datei herunterladen",
+      "Description": "Laden Sie die generierte CSV-Datei mit erfolgreichen Asset-MMS-IDs herunter:",
+      "DownloadButton": "MMS-ID-CSV herunterladen",
+      "FileInfo": "Datei enthält {{count}} Asset-Kennungen"
+    },
+    "Step2": {
+      "Title": "Asset-Set in Esploro erstellen",
+      "Description": "Verwenden Sie die heruntergeladene Datei, um ein Set von Assets zu erstellen:",
+      "Item1": "Navigieren Sie zu Suchen & Durchsuchen > Erweiterte Suche",
+      "Item2": "Klicken Sie auf \"Datei mit Kennungen hochladen\"",
+      "Item3": "Laden Sie die heruntergeladene CSV-Datei hoch",
+      "Item4": "Wählen Sie \"MMS-ID\" als Kennungstyp",
+      "Item5": "Klicken Sie auf \"Set erstellen\" und geben Sie einen aussagekräftigen Namen an",
+      "OpenAdvancedSearch": "Erweiterte Suche öffnen"
+    },
+    "Step3": {
+      "Title": "Job zum Importieren von Asset-Dateien ausführen",
+      "Description": "Führen Sie den Dateiimport-Job aus:",
+      "Item1": "Gehen Sie zu Repository > Jobs überwachen > Job ausführen",
+      "Item2": "Suchen und wählen Sie \"Forschungs-Asset-Dateien importieren\"",
+      "Item3": "Wählen Sie das im vorherigen Schritt erstellte Set",
+      "Item4": "Konfigurieren Sie die Job-Parameter nach Bedarf",
+      "Item5": "Senden Sie den Job ab und überwachen Sie den Fortschritt",
+      "OpenJobs": "Repository-Jobs öffnen"
+    },
+    "Step4": {
+      "Title": "Auf verarbeitete Dateien zugreifen",
+      "Description": "Sobald der Job abgeschlossen ist, greifen Sie über diese URLs auf Ihre Dateien zu:",
+      "ViewerUrls": "Esploro-Viewer-URLs:",
+      "ViewFiles": "Dateien anzeigen",
+      "CopyUrl": "URL in Zwischenablage kopieren"
+    }
+  },
+  "Errors": {
+    "InvalidFileType": "Bitte wählen Sie eine CSV-Datei",
+    "FileTooLarge": "Dateigröße muss weniger als 10 MB betragen",
+    "EmptyFile": "Die hochgeladene Datei ist leer",
+    "FileProcessing": "Fehler beim Verarbeiten der Datei",
+    "BatchProcessing": "Fehler beim Verarbeiten des Batches"
+  },
+  "Success": {
+    "FileUploaded": "{{records}} Datensätze erfolgreich aus CSV geladen",
+    "BatchProcessed": "{{count}} Assets erfolgreich verarbeitet"
+  },
+  "Warnings": {
+    "FileTypesAPIFailed": "Dateitypen konnten nicht vom System geladen werden, verwende Standardwerte"
+  },
   "config": {
-    "allowAnyRole": "Keine Einschränkungen aufgrund von Rollen",
-    "allowByRole": "Erlaubte Rollen verwalten",
-    "allowByUser": "Erlaubte Benutzende verwalten",
-    "allowedUsers": "Erlaubte Benutzende:",
-    "allowForGeneralAdministrator": "General Adminstrator (Allgemeiner Systemadminstrator)",
-    "allowForUserAdministrator": "User Adminstrator (Benutzer-Administrator)",
-    "allowUsage": "Benutzung der App verwalten",
-    "allowUsageExplanation": "Mit den folgenden Einstellungen lässt sich die Benutzung der App verwalten. Wenn keine Konfiguration vorgenommen wird, sind alle Benutzenden erlaubt. Ein expliziter Eintrag in der List der erlaubten Benutzenden hat immer Zugriff, unabhängig von den Rollen.",
-    "allowUsersWithRoleText": "Benutzenden mit folgenden Rollen verwendung erlauben:",
-    "confirmRemoveConfig": "Wollen sie die vorgenommene Konfiguration wirklich entfernen?",
-    "confirmUnsaved": "Ungespeicherte Daten, trotzdem Seite verlassen?",
-    "enableCheckScope": "Rollen-Bereich prüfen",
-    "enableCheckScopeExplanation": "Wenn diese Einstellung aktiviert ist, wird die bibliotheksspezifische Rollenverwaltung aktiviert. Benutzer mit der Rolle „Benutzer-Manager“, die auf eine bestimmte Bibliothek beschränkt sind, können nur Rollen mit demselben Bibliotheksbereich übertragen. Dies gilt nicht für Benutzer mit der Rolle „Benutzer-Administrator“, die alle Rollen auf übertragen können.",
-    "enableCheckScopeLabel": "Bibliotheksspezifische Rollenverwaltung aktivieren",
-    "removeConfig": "Konfiguration entfernen",
-    "rolesAndUsersAreExclusive": "Wenn die Benutzendenliste gepflegt ist, werden keine Rollen geprüft",
     "saveButton": "Speichern",
-    "searchForUser": "Benutzende suchen:",
-    "userAlreadyInList": "'{{user}}' hat bereits Zugriff"
-  },
-  "findUser": {
-    "error": {
-      "findUserAlert": "Benutzer suchen fehlgeschlagen, Alma antwortet mit Status: '{{status}}'",
-      "userDetailAlert": "Benutzerdetails für Benutzer '{{primaryId}}' fehlgeschlagen, Alma antwortet mit Status: '{{status}}'"
-    },
-    "findUserLabel": "Suchen",
-    "resultCountInfo": "(nur {{pageSize}} Einträge sichtbar, bitte Suche verfeinern z.B voller Name od. Primary ID)",
-    "resultCountLabel": "Resultate: {{resultCount}}",
-    "rolesNotValid": "Nicht alle Rollen gültig",
-    "rolesValid": "Alle Rollen gültig",
-    "selectUserFromListInfo": "Benutzer aus Liste wählen:"
-  },
-  "global": {
-    "role": "Rolle",
-    "roles": "Rollen"
-  },
-  "main": {
-    "checkingPermissions": "Überprüfe Zugriffsrechte...",
-    "compareButton": "Vergleichen",
-    "copyUserRolesButton": "Kopieren",
-    "error": {
-      "copyUserRolesAlert": "Rollen kopieren fehlgeschlagen, Alma antwortet mit Status: '{{status}}'",
-      "permissionCheck": "Prüfen der Zugrifssrechte fehlgeschlagen, Alma antwortet mit Status '{{status}}'",
-      "validationAlert": "Validieren des Benutzers fehlgeschlagen, Alma antwortet mit Status: '{{status}}'"
-    },
-    "needsAtLeastUserManager": "Zur Verwendung dieser App wird mindestens die Rolle 'Benutzer Manager' benötigt.",
-    "replaceExistingRolesCheckboxLabel": "Bestehende Rollen ersetzen",
-    "resetButton": "Zurücksetzen",
-    "results": {
-      "copiedRolesTitle": "Tatsächlich kopierte Rollen: {{count}}",
-      "copyInfo": "Falls diese Zahlen nicht korrekt aussehen, nutzen sie die 'Vergleichen Funktion', um zu sehen, ob die Quelle Duplikate hat. Doppelte Rollen werden beim Kopieren reduziert.",
-      "intersection": "Überschneidung ({{count}})",
-      "invalidRolesTitle": "Ungültige Rollen, ausgelassen: {{count}}",
-      "noneYet": "Noch keine Ergebnisse",
-      "onlyInSource": "Nur Quelle ({{count}})",
-      "onlyInTarget": "Nur Ziel ({{count}})",
-      "ready": "Resultate bereit",
-      "rolesSelectedToCopyTitle": "Gewählt für Kopie: {{count}}",
-      "skippedDuplicateRolesTitle": "Duplikate, ausgelassen: {{count}}",
-      "sourceDuplicates": "Duplikate auf Quelle ({{count}})",
-      "targetDuplicates": "Duplikate auf Ziel({{count}})",
-      "title": "Ergebnisse",
-      "validRolesTitle": "Gültige Rollen, auf Ziel: {{count}}"
-    },
-    "rolesCopyToTargetInfo": "Rollen werden auf diesen Benutzer kopiert",
-    "searchUserInfo": "Benutzer Suchen",
-    "selectTargetFirstInfo": "Bitte zuerst einen Ziel-Benutzer wählen",
-    "selectTargetUserInfo": "Ziel-Benutzer wählen indem Benutzerdetails eines Benutzers in Alma geöffnet werden ",
-    "sourceUserTitle": "Rollen von diesem Benutzer kopieren",
-    "successAlert": "Rollen erfolgreich kopiert. Für weitere Infomationen, siehe 'Resultate'",
-    "targetUserTitle": "Rollen auf diesen Benutzer kopieren",
-    "userIsNotAllowed": "Zugriff verweigert",
-    "userIsNotAllowedInfo": "Sie haben nicht die nötigen Zugriffsrechte um die App zu verwenden."
-  },
-  "roleSelect": {
-    "deselectAll": "Alle abwählen",
-    "notInScope": "Rolle nicht im Scope",
-    "rolesSelected": "Gewählte Rollen",
-    "selectAll": "Alle auswählen"
-  },
-  "validationDialog": {
-    "abortButtonLabel": "Abbrechen",
-    "introText": "Die Gültigkeitsprüfung der Rollen ist fehlgeschlagen: Nicht alle Rollen dieses Benutzers sind gültig.",
-    "outroText": "Wenn sie 'Benutzer wählen' klicken, können die Rollen in Gruppen kopiert werden um so die ungültigen Rollen zu finden und auszulassen. Dieser Vorgang kann etwas länger dauern.",
-    "proceedAnywayButtonLabel": "Benutzer wählen",
-    "title": "Achtung, nicht alle Rollen sind gültig"
+    "removeConfig": "Konfiguration entfernen"
   }
 }

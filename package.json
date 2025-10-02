@@ -1,7 +1,7 @@
 {
-  "name": "copy-user-roles",
-  "version": "1.4.0",
-  "description": "Alma CloudApp to copy roles from one user to another",
+  "name": "esploro-asset-file-processor",
+  "version": "2.0.0",
+  "description": "Esploro CloudApp to bulk attach files to research assets via CSV upload",
   "license": "MIT",
   "private": true,
   "scripts": {
