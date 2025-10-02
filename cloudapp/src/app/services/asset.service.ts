@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ProcessedAsset } from '../types/asset.types';
@@ -59,7 +59,7 @@ export class AssetService {
     return this.restService
       .call({
         url: `/esploro/v1/assets/${asset.mmsId}/files`,
-        method: 'POST',
+        method: HttpMethod.POST,
         requestBody: fileData,
       })
       .pipe(
