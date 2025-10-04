@@ -46,16 +46,43 @@ export class AssetService {
    * Note: The actual endpoint may vary based on Esploro API structure
    * @param asset The processed asset with file information
    * @returns Observable with processing result
+   * @deprecated Use updateAssetFileUrl instead
    */
   processAssetFile(asset: ProcessedAsset): Observable<any> {
+    return this.updateAssetFileUrl(asset);
+  }
+
+  /**
+   * Get file types from Ex Libris Configuration API using code table
+   * Uses AssetFileAndLinksType controlled vocabulary
+   * Authentication is automatic within the cloud app environment
+   * @returns Observable with file types
+   */
+  getFileTypes(): Observable<any> {
+    return this.restService.call('/almaws/v1/conf/code-tables/AssetFileAndLinksType').pipe(
+      catchError((error) => {
+        console.warn('Could not load file types from API:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Update asset file URL using Esploro API
+   * @param asset The processed asset with file information
+   * @returns Observable with processing result
+   */
+  updateAssetFileUrl(asset: ProcessedAsset): Observable<any> {
     const fileData = {
       url: asset.remoteUrl,
-      title: asset.fileTitle || 'Uploaded File',
+      label: asset.fileTitle || 'Uploaded File',
       description: asset.fileDescription || '',
-      type: asset.fileType || 'application/octet-stream',
+      type: {
+        value: asset.fileType || 'OTHER',
+        desc: asset.fileType || 'Other'
+      }
     };
 
-    // Note: This endpoint structure may need adjustment based on actual Esploro API
     return this.restService
       .call({
         url: `/esploro/v1/assets/${asset.mmsId}/files`,
@@ -74,24 +101,77 @@ export class AssetService {
             );
           }
           return throwError(
-            () => new Error(`Failed to process file for ${asset.mmsId}: ${error.message}`)
+            () => new Error(`Failed to update file URL for ${asset.mmsId}: ${error.message}`)
           );
         })
       );
   }
 
   /**
-   * Get file types from Ex Libris Configuration API
-   * Authentication is automatic within the cloud app environment
-   * @returns Observable with file types
+   * Create a set from MMS IDs using Sets API
+   * @param mmsIds Array of MMS IDs to include in the set
+   * @param setName Name for the new set
+   * @returns Observable with set creation result
    */
-  getFileTypes(): Observable<any> {
-    return this.restService.call('/almaws/v1/conf/mapping-tables/FileTypes').pipe(
-      catchError((error) => {
-        console.warn('Could not load file types from API:', error);
-        return throwError(() => error);
+  createSetFromMmsIds(mmsIds: string[], setName: string): Observable<any> {
+    const setData = {
+      name: setName,
+      type: { value: 'ITEMIZED', desc: 'Itemized' },
+      content_type: { value: 'ASSET', desc: 'Research Asset' },
+      private: { value: 'false', desc: 'Not Private' },
+      members: {
+        member: mmsIds.map(mmsId => ({
+          id: mmsId,
+          description: `Asset ${mmsId}`
+        }))
+      }
+    };
+
+    return this.restService
+      .call({
+        url: '/almaws/v1/conf/sets',
+        method: HttpMethod.POST,
+        requestBody: setData,
       })
-    );
+      .pipe(
+        catchError((error) => {
+          console.error('Error creating set:', error);
+          return throwError(
+            () => new Error(`Failed to create set: ${error.message}`)
+          );
+        })
+      );
+  }
+
+  /**
+   * Submit a manual job using Jobs API
+   * @param setId The ID of the set to process
+   * @param jobName Name of the job to run
+   * @returns Observable with job submission result
+   */
+  submitJob(setId: string, jobName: string): Observable<any> {
+    const jobData = {
+      name: jobName,
+      set_id: setId,
+      parameters: {
+        parameter: []
+      }
+    };
+
+    return this.restService
+      .call({
+        url: '/almaws/v1/conf/jobs',
+        method: HttpMethod.POST,
+        requestBody: jobData,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error submitting job:', error);
+          return throwError(
+            () => new Error(`Failed to submit job: ${error.message}`)
+          );
+        })
+      );
   }
 
   /**

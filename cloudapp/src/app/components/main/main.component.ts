@@ -37,7 +37,8 @@ export class MainComponent implements OnInit {
   }
 
   /**
-   * Load file types from Ex Libris Configuration API
+   * Load file types from Ex Libris Configuration API using code table
+   * Uses AssetFileAndLinksType controlled vocabulary
    * Cloud apps authenticate automatically - no API key required
    */
   private loadFileTypes(): void {
@@ -46,12 +47,11 @@ export class MainComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((response) => {
-          if (response && response.row) {
-            this.fileTypes = response.row
+          if (response && response.rows && response.rows.row) {
+            this.fileTypes = response.rows.row
               .map((row: any) => ({
-                code: row.column0?.value || row.code || '',
-                description:
-                  row.column1?.value || row.description || row.column0?.value || '',
+                code: row.code || '',
+                description: row.description || row.code || '',
               }))
               .filter((type: FileType) => type.code);
           }

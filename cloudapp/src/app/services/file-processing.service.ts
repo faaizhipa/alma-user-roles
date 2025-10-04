@@ -32,6 +32,7 @@ export class FileProcessingService {
 
   /**
    * Process assets asynchronously with progress updates
+   * After successful processing, creates a set and submits the job
    * @param assets Array of assets to process
    * @returns Promise with processing result
    */
@@ -57,7 +58,7 @@ export class FileProcessingService {
 
         // Process file if URL is provided
         if (asset.remoteUrl && asset.remoteUrl.trim() !== '') {
-          await this.assetService.processAssetFile(asset).toPromise();
+          await this.assetService.updateAssetFileUrl(asset).toPromise();
         }
 
         // Generate viewer URL
@@ -77,13 +78,53 @@ export class FileProcessingService {
       }
     }
 
-    return {
+    const result: ProcessingResult = {
       successful,
       failed,
       totalProcessed: total,
       successCount: successful.length,
       failureCount: failed.length,
     };
+
+    // Create set and submit job if there are successful assets
+    if (successful.length > 0) {
+      try {
+        await this.createSetAndSubmitJob(successful);
+      } catch (error: any) {
+        console.error('Error creating set or submitting job:', error);
+        // Don't fail the entire operation if set creation/job submission fails
+        // The file URLs have already been updated successfully
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Create a set from successful assets and submit the job
+   * @param successfulAssets Array of successfully processed assets
+   */
+  private async createSetAndSubmitJob(successfulAssets: ProcessedAsset[]): Promise<void> {
+    const mmsIds = successfulAssets.map(asset => asset.mmsId);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+    const setName = `Asset Files Upload ${timestamp}`;
+
+    console.log(`Creating set "${setName}" with ${mmsIds.length} assets...`);
+    
+    const setResponse = await this.assetService.createSetFromMmsIds(mmsIds, setName).toPromise();
+    
+    if (setResponse && setResponse.id) {
+      const setId = setResponse.id;
+      console.log(`Set created with ID: ${setId}`);
+      
+      // Submit the job to upload research asset files
+      console.log('Submitting job "Upload Research Asset Files"...');
+      const jobResponse = await this.assetService.submitJob(setId, 'Upload Research Asset Files').toPromise();
+      
+      if (jobResponse) {
+        console.log('Job submitted successfully:', jobResponse);
+      }
+    }
   }
 
   /**
