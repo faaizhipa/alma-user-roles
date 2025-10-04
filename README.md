@@ -1,100 +1,220 @@
-# Copy User Roles
+# Esploro Asset File Processor
 
 <img align="right" src="./cloudapp/src/assets/app-icon.png" width="100" style="border-radius: 3px">
 
-An [ExLibris Alma CloudApp](https://developers.exlibrisgroup.com/cloudapps/), which allows to copy user roles from one user to another and also to compare the applied roles of two users.
+An [ExLibris Esploro CloudApp](https://developers.exlibrisgroup.com/cloudapps/) for batch uploading files to research assets via CSV import. This app streamlines the process of attaching files to multiple Esploro research assets by allowing you to upload metadata via CSV, intelligently map columns to asset fields, and process files in bulk.
 
 <br>
 <br>
 
-## How to use
+## Features
 
-In order to use the CloudApp, one of the following roles is needed:
+- **CSV Upload**: Drag-and-drop or select CSV files with asset metadata
+- **Intelligent Column Mapping**: Automatic detection and suggestion of field mappings
+- **Batch Processing**: Process multiple assets efficiently with progress tracking
+- **Comprehensive Results**: Detailed success/failure reporting with error messages
+- **Workflow Integration**: Step-by-step instructions for completing the Esploro workflow
+- **MMS ID Export**: Download CSV of successfully processed asset IDs for set creation
 
-- 'User Manager'
-- 'User Administrator'
-- 'General System Administrator'
+## How to Use
 
-To copy roles from one user to another perform the following steps:
+### Step 1: Prepare Your CSV File
 
-1. Install the 'Copy User Roles' CloudApp (see: [ExLibris documentation on using CloudApps](<https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/Configuring_Cloud_Apps#Using_Cloud_Apps>))
-2. Open the user record in Alma which is to receive new roles
-3. Open the 'Copy User Roles' CloudApp
-4. The current user record is selected as target user
-5. In the CloudApp, search for the user from whom the roles are to be copied
-6. Select the user form the list
-7. Click the 'Copy user roles' button
+Create a CSV file with the following columns (minimum requirement: MMS ID):
 
-## Configuration
+- **MMS ID** (required): Esploro asset identifier
+- **Remote URL**: Direct URL to file content
+- **File Title**: Display name for the file
+- **File Description**: Detailed file description
+- **File Type**: File format or MIME type (e.g., PDF, DOCX)
 
-The app some institution-wide configuration options, configuration can be set by a user with any of the 'administrator' roles, i.e. 'General System Administrator' or 'Catalog Administrator' (see [ExLibris Documentation](https://developers.exlibrisgroup.com/cloudapps/docs/api/configuration-service/)).
+Example CSV:
+```csv
+MMS ID,Remote URL,File Title,File Description,File Type
+991234567890123456,https://example.com/file1.pdf,Research Paper,Main research findings,PDF
+991234567890123457,https://example.com/file2.docx,Supplementary Data,Additional data tables,DOCX
+```
 
-To open the configuration, click the 'three dots menu' an then the configuration icon:
+### Step 2: Upload and Process
 
-<img src="doc/img/open-configuration.jpg" width=400><br><br><br>
+1. Install the 'Esploro Asset File Processor' CloudApp (see: [ExLibris documentation on using CloudApps](<https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/050Configuring_General_Alma_Functions/Configuring_Cloud_Apps#Using_Cloud_Apps>))
+2. Navigate to any Esploro research asset record
+3. Open the 'Esploro Asset File Processor' CloudApp
+4. Upload your CSV file by dragging and dropping or clicking "Select File"
+5. Review and adjust the automatic column mappings
+6. Click "Process Data" to begin batch processing
+7. Monitor the progress as assets are processed
 
-### Restrict/manage access
+### Step 3: Complete the Workflow
 
-There is a possibility to manage the access to the CloudApp. If no configuration regarding access control is made, no additional restrictions will apply.
+After processing completes:
 
-**General note**
+1. **Download MMS ID File**: Download the CSV containing successfully processed asset IDs
+2. **Create Asset Set**: Use the downloaded file to create a set in Esploro:
+   - Navigate to Search & Browse > Advanced Search
+   - Click "Upload file with identifiers"
+   - Upload the CSV and select "MMS ID" as identifier type
+   - Create the set with a meaningful name
+3. **Run Import Job**: Execute the "Import Research Assets Files" job:
+   - Go to Repository > Monitor Jobs > Run a Job
+   - Select "Import Research Assets Files"
+   - Choose your created set
+   - Configure and submit the job
+4. **Access Files**: Once complete, access your files via the Esploro viewer URLs provided
 
-The following should be noted: The access management in the app only prevents or allows access to the user interface. Access to the API can only be restricted by ExLibris. According to ExLibris, only interfaces to which the logged-in user has access can be used via CloudApp:
+## CSV File Requirements
+
+### Format Specifications
+
+- **File Format**: CSV (Comma-Separated Values)
+- **Separator**: Comma (,)
+- **Encoding**: UTF-8 recommended
+- **File Size**: Maximum 10MB
+- **Headers**: First row must contain column headers
+
+### Required Fields
+
+- **MMS ID**: At least one column must be mapped to MMS ID (Esploro asset identifier)
+
+### Optional Fields
+
+- **Remote URL**: Direct HTTP/HTTPS URL to the file content
+- **File Title**: Display name for the file in Esploro
+- **File Description**: Detailed description of the file
+- **File Type**: File format code (e.g., PDF, DOCX, XLSX)
+
+### Column Mapping Intelligence
+
+The app automatically suggests column mappings based on:
+- Column header names (e.g., "mms_id", "url", "title")
+- Sample data patterns (e.g., numeric IDs, HTTP URLs)
+- Confidence scores indicate mapping reliability
+
+## Processing Behavior
+
+### Validation
+
+- Each asset's MMS ID is validated before file processing
+- Invalid MMS IDs or inaccessible assets are reported as errors
+- Processing continues for remaining assets even if some fail
+
+### Error Handling
+
+The app provides detailed error messages for:
+- Asset not found (404)
+- Access denied (401/403)
+- Invalid file data (400)
+- File conflicts (409)
+- Network or API errors
+
+### Results
+
+After processing, the app displays:
+- Summary statistics (successful vs. failed)
+- Detailed table of all processed assets
+- Error messages for failed assets
+- Download link for MMS ID CSV (successful assets only)
+- Esploro viewer URLs for accessing files
+
+## Permissions and Security
+
+**Authentication**: The CloudApp uses the logged-in user's credentials automatically. No API keys are required.
+
+**Required Permissions**: Users must have appropriate Esploro permissions to:
+- Access research asset records
+- Attach files to assets
+- Run repository jobs
+
+**API Access**: According to ExLibris:
 
 > The user must have permissions to perform the action implemented by the API, and any history actions are logged under the user's identity. If the Cloud App attempts to call an API which performs an action for which the logged-in user does not have the proper role, Alma will return a 401 Unauthorized to the Cloud App.
 
 See [ExLibris documentation](https://developers.exlibrisgroup.com/cloudapps/docs/api/rest-service/)
 
-**Allow by user**
+## Troubleshooting
 
-If a user is added to the list of allowed users, access is granted regardless of the users roles.
+### Common Issues
 
-- To add a user, search for the user in the according search field, and click on the user you want to add
-- To remove a user select the user in the list and click the 'trash bin' icon
-- After any configuration change, click the 'save' button to save the settings
+**Issue**: CSV upload fails with "Invalid file type"
+- **Solution**: Ensure the file has a .csv extension and is in CSV format
 
-<img src="doc/img/add-user.jpg" width=400><br><br><br>
+**Issue**: "At least one column must be mapped to MMS ID" error
+- **Solution**: Verify that at least one column in your CSV is mapped to the "MMS ID" field
 
-**Allow by role**
+**Issue**: Asset processing fails with "Asset not found"
+- **Solution**: Verify the MMS ID exists in Esploro and is accessible to your user account
 
-To use the app, the role of 'User Manager', 'User Administrator' or 'General System Administrator' is needed. However, this configuration allows to further restrict to a smaller set of allowed roles. Please note, that as soon as a user is added to the list of allowed users it is not possible to restrict access by role.
+**Issue**: File type not appearing in dropdown
+- **Solution**: The app loads file types from the system. If not available, you can enter the file type code manually
 
-<img src="doc/img/allow-by-role.jpg" width=400><br><br><br>
+### Best Practices
 
-### Check role scope
+1. **Test with Small Batches**: Start with a small CSV (5-10 rows) to verify your data format
+2. **Validate MMS IDs**: Ensure all MMS IDs are valid and accessible before processing
+3. **Use Complete URLs**: File URLs should be complete and accessible (HTTP/HTTPS)
+4. **Keep Files Organized**: Use meaningful file titles and descriptions for easier management
+5. **Monitor Job Progress**: Check the Import Asset Files job status in Esploro after processing
 
-This option prevents users with the User Manager role, scoped to a specific library, from copying roles which are scoped to another library. This option does **not** affect users with the 'General Administrator' role or the 'User Administrator' role. For further information see the following documents: [Alma Release Notes 11/2024](https://knowledge.exlibrisgroup.com/Alma/Release_Notes/2024/Alma_2024_Release_Notes?mon=202411BASE#:~:text=Enhanced%20Library%2DSpecific%20Role%20Management%20for%20User%20Management%20in%20Alma%20UI) and [User Manager role documentation](<https://knowledge.exlibrisgroup.com/Alma/Product_Documentation/010Alma_Online_Help_(English)/050Administration/030User_Management/060Managing_User_Roles?mt-draft=true#user_manager>)
+## Technical Details
 
-<img src="doc/img/check-role-scope.jpg" width=400><br><br><br>
+### Architecture
 
-## Select which roles should be copied
+The CloudApp is built with:
+- **Angular 18+**: Modern web framework
+- **ExLibris CloudApp Framework**: Integration with Esploro platform
+- **Material Design**: UI components following ExLibris style guide
+- **RxJS**: Reactive programming for async operations
 
-By default all roles assigned to the source user are copied to the target user.
+### Services
 
-<img src="doc/img/selected-roles-01.jpg" width=400><br><br><br>
+- **AssetService**: Esploro API integration and file processing
+- **CSVParserService**: RFC 4180 compliant CSV parsing
+- **ColumnMappingService**: Intelligent field mapping with confidence scoring
+- **FileProcessingService**: Batch orchestration and progress tracking
 
-If only some roles should be copied, there is the possibility to select a custom set of roles:
+### API Integration
 
-<img src="doc/img/selected-roles-02.jpg" width=400><br><br><br>
+- **Esploro Assets API**: Asset validation and file attachment
+- **Configuration API**: File type retrieval
+- **CloudApp REST Service**: Automatic authentication and error handling
 
-Please note, that the selection has no effect when using the 'Compare' function.
+## Support and Contribution
 
-## Copying roles from users with invalid roles
+### Reporting Issues
 
-- When selecting the source user the roles will be validated, if not all roles are valid there will be a dialog with the error message from Alma, which should help to find the role which is not correctly configured
-- The dialog offers the possibility to proceed anyway: in this case, the valid roles will be copied and the invalid roles will be skipped.
-- The copy process with invalid roles **takes significantly longer** than with only valid roles
-- After copying, a short summary about the valid and invalid roles is displayed
-
-<img src="doc/img/results-copy.jpg" width=400><br><br><br>
-
-## Comparing roles of two users
-
-- Especially after copying from users with invalid roles, it can be helpful to compare the roles of the two users
-- It seems to be possible, that a user has duplicate roles. The copy process reduces the duplicates, which results sometimes in different role numbers between the source user and the target user after copying. This can be verified by comparing the two users
-
-<img src="doc/img/results-compare.jpg" width=400><br><br><br>
+If you encounter issues or have suggestions:
+1. Check the troubleshooting section above
+2. Review existing issues in the repository
+3. Create a new issue with detailed information:
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - CSV file structure (sample data)
+   - Error messages or screenshots
 
 ### Development
 
-[Notes on CloudApp development](doc/development.md)
+For development setup and contribution guidelines, see [Notes on CloudApp development](doc/development.md)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Changelog
+
+### Version 2.0.0 (Current)
+
+- Complete transformation from User Roles manager to Esploro Asset File Processor
+- CSV upload with drag-and-drop support
+- Intelligent column mapping with confidence scoring
+- Batch processing with progress tracking
+- Comprehensive results and error reporting
+- Integrated Esploro workflow instructions
+- MMS ID CSV export for set creation
+- Bilingual support (English/German)
+
+### Version 1.4.0 (Previous - User Roles)
+
+- User role copying and comparison functionality
+- Role scope checking
+- Configuration management
+- See git history for detailed changes
